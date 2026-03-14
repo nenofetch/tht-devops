@@ -10,5 +10,5 @@ output "instance_id" {
 
 output "ssh_user_at" {
   description = "Quick SSH hint (replace <private-key-path> if needed)"
-  value       = "ssh -i ${var.ssh_private_key_path} azureuser@${azurerm_public_ip.vm.ip_address}"
+  value       = "ssh azureuser@${azurerm_public_ip.vm.ip_address}"
 }
