@@ -1,12 +1,12 @@
 #!/bin/bash
 set -eux
 
-# Cloud-init script for Oracle Linux 9 ARM image
+# Cloud-init script for Ubuntu Linux
 # Install nginx and create a simple "Hello, OpenTofu!" page and enable service
 
 # Update system and installing nginx, wget, and tar
-dnf update -y
-dnf install -y nginx wget tar
+apt update
+apt install -y nginx wget tar firewalld
 
 # Enable nginx service
 systemctl enable nginx
@@ -23,13 +23,13 @@ firewall-cmd --permanent --add-port=9100/tcp
 firewall-cmd --reload
 
 # Create a lightweight index page
-cat > /usr/share/nginx/html/index.html <<'HTML'
+cat > /var/www/html/index.html <<'HTML'
 <!doctype html>
 <html>
   <head><meta charset="utf-8"><title>Hello, OpenTofu!</title></head>
   <body>
     <h1>Hello, OpenTofu!</h1>
-    <p>Served from an OCI VM provisioned by OpenTofu.</p>
+    <p>Served from an VM provisioned by OpenTofu.</p>
   </body>
 </html>
 HTML
@@ -63,14 +63,26 @@ NGCONF
 systemctl enable --now nginx
 systemctl reload nginx || true
 
+# Check Architecture
+ARCH=$(uname -m)
+
+if [[ "$ARCH" == "aarch64" || "$ARCH" == "arm64" ]]; then
+    NODE_ARCH="arm64"
+elif [[ "$ARCH" == "x86_64" ]]; then
+    NODE_ARCH="amd64"
+else
+    echo "Unsupported architecture: $ARCH"
+    exit 1
+fi
+
 # Install Prometheus Node Exporter as a service
-NODE_EXPORTER_VER=1.6.1
+NODE_EXPORTER_VER=1.10.2
 TMPDIR=/tmp/nodeexp
 mkdir -p ${TMPDIR}
 cd ${TMPDIR}
-wget -q https://github.com/prometheus/node_exporter/releases/download/v${NODE_EXPORTER_VER}/node_exporter-${NODE_EXPORTER_VER}.linux-arm64.tar.gz
-tar xzf node_exporter-${NODE_EXPORTER_VER}.linux-arm64.tar.gz
-install -m 0755 node_exporter-${NODE_EXPORTER_VER}.linux-arm64/node_exporter /usr/local/bin/node_exporter || true
+wget -q https://github.com/prometheus/node_exporter/releases/download/v${NODE_EXPORTER_VER}/node_exporter-${NODE_EXPORTER_VER}.linux-${NODE_ARCH}.tar.gz
+tar xzf node_exporter-${NODE_EXPORTER_VER}.linux-${NODE_ARCH}.tar.gz
+install -m 0755 node_exporter-${NODE_EXPORTER_VER}.linux-${NODE_ARCH}/node_exporter /usr/local/bin/node_exporter || true
 useradd --no-create-home --shell /bin/false node_exporter || true
 
 cat > /etc/systemd/system/node_exporter.service <<'SVC'

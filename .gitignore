@@ -5,3 +5,4 @@
 *.tfvars
 *.pem
 *.key
+.terraform.lock.hcl
