@@ -1,6 +1,7 @@
 name: OpenTofu Provisioning
 
 on:
+    workflow_dispatch:
     pull_request:
         branches: [main]
         paths: ["challenge3/**"]
