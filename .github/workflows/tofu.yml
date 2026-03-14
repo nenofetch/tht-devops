@@ -1,4 +1,4 @@
-name: OpenTofu OCI Provisioning
+name: OpenTofu Provisioning
 
 on:
     pull_request:
@@ -38,6 +38,8 @@ jobs:
             - name: Tofu Plan
               run: tofu plan -out=tfplan
 
-            - name: Tofu Apply
+            - name: Terraform Apply
               if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-              run: tofu apply -auto-approve tfplan
+              run: tofu apply -auto-approve
+              env:
+                  TF_VAR_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
