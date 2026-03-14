@@ -37,6 +37,8 @@ jobs:
 
             - name: Tofu Plan
               run: tofu plan -out=tfplan
+              env:
+                  TF_VAR_subscription_id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
             - name: Terraform Apply
               if: github.event_name == 'push' && github.ref == 'refs/heads/main'
