@@ -13,10 +13,9 @@ variable "instance_name" {
   type        = string
   default     = "otf-web"
 }
-variable "ssh_public_key_path" {
-  description = "Path to SSH public key"
+variable "ssh_public_key" {
+  description = "SSH public key"
   type        = string
-  default     = "~/.ssh/id_rsa.pub"
 }
 
 variable "vcn_cidr" {
