@@ -26,7 +26,7 @@ firewall-cmd --reload
 cat > /var/www/html/index.html <<'HTML'
 <!doctype html>
 <html>
-  <head><meta charset="utf-8"><title>Hello, OpenTofu!</title></head>
+  <head><meta charset="utf-8"><title>Hello, OpenTofu Iac!</title></head>
   <body>
     <h1>Hello, OpenTofu!</h1>
     <p>Served from an VM provisioned by OpenTofu IaC.</p>
